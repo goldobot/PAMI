@@ -180,9 +180,14 @@ void setup() {
   waitMatchEnd();
   /* stop movement */
   disableSteppers();
+
+  /* Party time */
+  xTaskCreate(TaskRainbow, "Task Rainbow", 4096, NULL, 1, NULL);
 }
 
 void loop() {
-  /* Party time */
-  xTaskCreate(TaskRainbow, "Task Rainbow", 4096, NULL, 1, NULL);
+  servo_lift();
+  vTaskDelay(2000 / portTICK_PERIOD_MS);
+  servo_drop();
+  vTaskDelay(2000 / portTICK_PERIOD_MS);
 }
