@@ -153,6 +153,7 @@ void setup() {
   init_servos();
   init_pami();
   init_sensors();
+  servo_drop();
 
   /* Task to check color button */
   vTaskDelay (500 / portTICK_PERIOD_MS);
@@ -166,6 +167,7 @@ void setup() {
   
   /* Start Match */
   Serial.println("GO GO GO !!!");
+  servo_lift();
   leds_start_match();
 
   // TODO : Lift mini PAMIs
