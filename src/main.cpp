@@ -24,7 +24,7 @@
 #if 0
   #define DURATION 14
 #else
-  #define DURATION 10
+  #define DURATION 14
 #endif
 
 #define AU_STATUS 1
@@ -110,12 +110,17 @@ void TaskButton(void *pvParameters) {
 }
 
 void waitTirette() {
+    bool tirette = false;
+    bool au_status = false;
+
     /* Wait for tirette insertion */
-    while (digitalRead(TIRETTE) == HIGH) {
-      vTaskDelay(5 / portTICK_PERIOD_MS);
+    while (!tirette || !au_status) {
+      tirette = digitalRead(TIRETTE) == HIGH ? false : true;
+      au_status = digitalRead(AU_STATUS) == HIGH ? true : false;
+      leds_tirette_wait(tirette, au_status);
+      vTaskDelay(10 / portTICK_PERIOD_MS);
     }
-    Serial.println("Tirette present");
-    leds_pull_wait();
+    Serial.println("Tirette present and AU OK");
     /* Wait for tirette pull */
     vTaskDelay (500 / portTICK_PERIOD_MS);
     while (digitalRead(TIRETTE) == LOW) {
@@ -123,13 +128,22 @@ void waitTirette() {
     }
     Serial.println("Tirette pulled, starting match");
     waitForStart = false;
-    leds_start_wait();
 }
 
 /* function to wait start time */
 void waitStart() {
+  uint8_t count = 0;
   while (getMatchTime() < WAIT_TIME) {
     vTaskDelay(50 / portTICK_PERIOD_MS);
+    count++;
+    if(count < 10)
+      leds_start_wait(1);
+    else if (count < 20)
+      leds_start_wait(2);
+    else if (count < 30)
+      leds_start_wait(3);
+    else
+      count = 0;
   }
   /* Add 500ms just in case to avoid jumpstart */
   vTaskDelay(500 / portTICK_PERIOD_MS);
@@ -142,12 +156,12 @@ void waitMatchEnd() {
   }
 }
 
-
 void setup() {
   Serial.begin(115200);
 
   pinMode(TIRETTE, INPUT);
   pinMode(COLOR_BTN, INPUT_PULLUP);
+  pinMode(AU_STATUS, INPUT);
 
   init_leds();
   init_servos();

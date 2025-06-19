@@ -2,35 +2,9 @@
 #include "common.h"
 #include "leds.h"
 
-#define PIN_WS2812B 5 // The ESP32 pin GPIO16 connected to WS2812B
-#define NUM_PIXELS 4  // The number of LEDs (pixels) on WS2812B LED strip
-#define RED_LED 10
-
 Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800);
 
 /* Name of LEDs on the board*/
-enum led_name
-{
-    LED_COLORSIDE = 0,
-    LED_DETECT_RIGHT = 1,
-    LED_DETECT_CENTER = 2,
-    LED_DETECT_LEFT = 3,
-    LED_MAX = NUM_PIXELS,
-};
-
-/* Color names */
-enum color
-{
-    COLOR_OFF,
-    COLOR_RED,
-    COLOR_GREEN,
-    COLOR_BLUE,
-    COLOR_YELLOW,
-    COLOR_CYAN,
-    COLOR_MAGENTA,
-    COLOR_WHITE,
-    COLOR_MAX,
-};
 
 struct led_color
 {
@@ -114,9 +88,9 @@ void show_start_pos(uint8_t pami_id, uint8_t side)
         switch (pami_id)
         {
         case 0:
-            led_colors[LED_DETECT_LEFT].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_LEFT].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_LEFT].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_RED].r;
+            led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_RED].g;
+            led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_RED].b;
             break;
         case 1:
             led_colors[LED_DETECT_CENTER].r = color_table[COLOR_RED].r;
@@ -124,9 +98,9 @@ void show_start_pos(uint8_t pami_id, uint8_t side)
             led_colors[LED_DETECT_CENTER].b = color_table[COLOR_RED].b;
             break;
         case 2:
-            led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_LEFT].r = color_table[COLOR_RED].r;
+            led_colors[LED_DETECT_LEFT].g = color_table[COLOR_RED].g;
+            led_colors[LED_DETECT_LEFT].b = color_table[COLOR_RED].b;
             break;
         }
     }
@@ -135,9 +109,9 @@ void show_start_pos(uint8_t pami_id, uint8_t side)
         switch (pami_id)
         {
         case 0:
-            led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_LEFT].r = color_table[COLOR_RED].r;
+            led_colors[LED_DETECT_LEFT].g = color_table[COLOR_RED].g;
+            led_colors[LED_DETECT_LEFT].b = color_table[COLOR_RED].b;
             break;
         case 1:
             led_colors[LED_DETECT_CENTER].r = color_table[COLOR_RED].r;
@@ -145,67 +119,56 @@ void show_start_pos(uint8_t pami_id, uint8_t side)
             led_colors[LED_DETECT_CENTER].b = color_table[COLOR_RED].b;
             break;
         case 2:
-            led_colors[LED_DETECT_LEFT].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_LEFT].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_LEFT].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_RED].r;
+            led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_RED].g;
+            led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_RED].b;
             break;
         }
     }
     leds_update();
 }
 
-/* All LEDs yellow*/
-void leds_pull_wait()
-{
-    led_colors[LED_DETECT_LEFT].r = color_table[COLOR_YELLOW].r;
-    led_colors[LED_DETECT_LEFT].g = color_table[COLOR_YELLOW].g;
-    led_colors[LED_DETECT_LEFT].b = color_table[COLOR_YELLOW].b;
-
-    led_colors[LED_DETECT_CENTER].r = color_table[COLOR_YELLOW].r;
-    led_colors[LED_DETECT_CENTER].g = color_table[COLOR_YELLOW].g;
-    led_colors[LED_DETECT_CENTER].b = color_table[COLOR_YELLOW].b;
-
-    led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_YELLOW].r;
-    led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_YELLOW].g;
-    led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_YELLOW].b;
+void front_leds_color(enum color color) {
+    for(int i = LED_DETECT_RIGHT; i <= LED_DETECT_LEFT; i++) {
+        led_colors[i].r = color_table[color].r;
+        led_colors[i].g = color_table[color].g;
+        led_colors[i].b = color_table[color].b;
+    }
 
     leds_update();
 }
 
-/* All LEDs red*/
-void leds_start_wait()
+void leds_tirette_wait(bool tirette, bool au_status)
 {
-    led_colors[LED_DETECT_LEFT].r = color_table[COLOR_RED].r;
-    led_colors[LED_DETECT_LEFT].g = color_table[COLOR_RED].g;
-    led_colors[LED_DETECT_LEFT].b = color_table[COLOR_RED].b;
+    if (tirette && au_status)
+        front_leds_color(COLOR_YELLOW);
+    else if(tirette && !au_status)
+        front_leds_color(COLOR_BLUE);
+    else if(!tirette && au_status)
+        front_leds_color(COLOR_GREEN);
+}
 
-    led_colors[LED_DETECT_CENTER].r = color_table[COLOR_RED].r;
-    led_colors[LED_DETECT_CENTER].g = color_table[COLOR_RED].g;
-    led_colors[LED_DETECT_CENTER].b = color_table[COLOR_RED].b;
-
-    led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_RED].r;
-    led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_RED].g;
-    led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_RED].b;
-
+/* One yellow, others red */
+void leds_start_wait(uint8_t led_no)
+{
+    for(int i = LED_DETECT_RIGHT; i <= LED_DETECT_LEFT; i++) {
+        if(i == led_no) {
+            led_colors[i].r = color_table[COLOR_YELLOW].r;
+            led_colors[i].g = color_table[COLOR_YELLOW].g;
+            led_colors[i].b = color_table[COLOR_YELLOW].b;
+        } else {
+            led_colors[i].r = color_table[COLOR_RED].r;
+            led_colors[i].g = color_table[COLOR_RED].g;
+            led_colors[i].b = color_table[COLOR_RED].b;
+        }
+    }
     leds_update();
 }
 
 /* All LEDs white*/
 void leds_start_match()
 {
-    led_colors[LED_DETECT_LEFT].r = color_table[COLOR_WHITE].r;
-    led_colors[LED_DETECT_LEFT].g = color_table[COLOR_WHITE].g;
-    led_colors[LED_DETECT_LEFT].b = color_table[COLOR_WHITE].b;
-
-    led_colors[LED_DETECT_CENTER].r = color_table[COLOR_WHITE].r;
-    led_colors[LED_DETECT_CENTER].g = color_table[COLOR_WHITE].g;
-    led_colors[LED_DETECT_CENTER].b = color_table[COLOR_WHITE].b;
-
-    led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_WHITE].r;
-    led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_WHITE].g;
-    led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_WHITE].b;
-
-    leds_update();
+    front_leds_color(COLOR_WHITE);
 }
 
 void TaskRainbow(void *pvParameters)
@@ -217,14 +180,16 @@ void TaskRainbow(void *pvParameters)
 /* Party time*/
 void rainbow(int wait)
 {
-    for (long firstPixelHue = 0; firstPixelHue < 5 * 65536; firstPixelHue += 256)
-    {
-        for (int i = 0; i < ws2812b.numPixels(); i++)
+    while(true) {
+        for (long firstPixelHue = 0; firstPixelHue < 5 * 65536; firstPixelHue += 256)
         {
-            int pixelHue = firstPixelHue + (i * 65536L / ws2812b.numPixels());
-            ws2812b.setPixelColor(i, ws2812b.gamma32(ws2812b.ColorHSV(pixelHue)));
+            for (int i = 0; i < ws2812b.numPixels(); i++)
+            {
+                int pixelHue = firstPixelHue + (i * 65536L / ws2812b.numPixels());
+                ws2812b.setPixelColor(i, ws2812b.gamma32(ws2812b.ColorHSV(pixelHue)));
+            }
+            ws2812b.show();
+            vTaskDelay(wait / portTICK_PERIOD_MS);
         }
-        ws2812b.show();
-        vTaskDelay(wait / portTICK_PERIOD_MS);
     }
 }
