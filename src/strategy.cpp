@@ -7,11 +7,24 @@ extern enum side current_side;
 extern uint8_t pami_id;
 
 void strat_superstar_yellow(){
-    moveStepper(500, 1000, 500);
+    moveStepper(-500, 2000, 1000);
     vTaskDelay(100 / portTICK_PERIOD_MS);
-    moveStepper(700, 1000, 500);
-    turnStepper(-90, 500, 500);
+    moveStepper(-700, 1500, 500);
+
+    /* Drop 1st mini PAMI */
+    turnStepper(30, 500, 500);
     vTaskDelay(100 / portTICK_PERIOD_MS);
+    servo_drop_r();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    /* Drop 2nd mini PAMI */
+    turnStepper(30, 500, 500);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    servo_drop_l();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    /* Go to edge */
+    turnStepper(30, 500, 500);
     moveStepper(-320, 600,300);
 }
 
@@ -20,15 +33,51 @@ void strat_groupie1_yellow(){
 }
 
 void strat_groupie2_yellow(){
+    /* Move to last zone*/
+    moveStepper(-400, 6000, 1000);
+    turnStepper(45, 3000, 1000);
+    moveStepper(-700, 6000, 1000);
+    turnStepper(-45, 3000, 1000);
+    moveStepper(-750, 6000, 1000);
 
+    /* Face pit */
+    turnStepper(-90, 3000, 1000);
+
+    /* Drop 1st mini PAMI */
+    turnStepper(-10, 3000, 1000);
+    servo_drop_r();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    /* Drop 2nd mini PAMI */
+    turnStepper(20, 3000, 1000);
+    servo_drop_l();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    /* Move in pit */
+    turnStepper(-10, 3000, 1000);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    moveStepper(-200, 1000, 1000);
 }
 
 void strat_superstar_blue(){
-    moveStepper(500, 1000, 500);
+    moveStepper(-500, 2000, 1000);
     vTaskDelay(100 / portTICK_PERIOD_MS);
-    moveStepper(700, 1000, 500);
-    turnStepper(90, 500, 500);
+    moveStepper(-700, 1500, 500);
+
+    /* Drop 1st mini PAMI */
+    turnStepper(-30, 500, 500);
     vTaskDelay(100 / portTICK_PERIOD_MS);
+    servo_drop_l();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    /* Drop 2nd mini PAMI */
+    turnStepper(-30, 500, 500);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    servo_drop_r();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    /* Go to edge */
+    turnStepper(-30, 500, 500);
     moveStepper(-320, 600,300);
 }
 
@@ -38,6 +87,30 @@ void strat_groupie1_blue(){
 
 void strat_groupie2_blue(){
 
+    /* Move to last zone*/
+    moveStepper(-400, 6000, 1000);
+    turnStepper(-45, 3000, 1000);
+    moveStepper(-700, 6000, 1000);
+    turnStepper(45, 3000, 1000);
+    moveStepper(-750, 6000, 1000);
+
+    /* Face pit */
+    turnStepper(90, 3000, 1000);
+
+    /* Drop 1st mini PAMI */
+    turnStepper(10, 3000, 1000);
+    servo_drop_l();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    /* Drop 2nd mini PAMI */
+    turnStepper(-20, 3000, 1000);
+    servo_drop_r();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    /* Move in pit */
+    turnStepper(10, 3000, 1000);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    moveStepper(-200, 1000, 1000);
 }
 
 void TaskStrategy(void *pvParameters) {
