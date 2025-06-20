@@ -15,17 +15,13 @@
 #include "strategy.h"
 
 /* Time before start (85 for real match)*/
-#if 0
+#if 1
   #define WAIT_TIME 85
 #else
   #define WAIT_TIME 5 // For testing purposes, set to 5 seconds
 #endif
 
-#if 0
-  #define DURATION 14
-#else
-  #define DURATION 14
-#endif
+#define DURATION 14
 
 #define AU_STATUS 1
 #define TIRETTE 9
@@ -145,6 +141,7 @@ void waitStart() {
     else
       count = 0;
   }
+  servo_lift();
   /* Add 500ms just in case to avoid jumpstart */
   vTaskDelay(500 / portTICK_PERIOD_MS);
 }
@@ -172,16 +169,15 @@ void setup() {
   /* Task to check color button */
   vTaskDelay (500 / portTICK_PERIOD_MS);
   xTaskCreate(TaskButton, "Task Button", 4096, NULL, 1, NULL);
-  
-  waitTirette();
 
+  waitTirette();
+  
   startMatchTimer();
 
   waitStart();
   
   /* Start Match */
   Serial.println("GO GO GO !!!");
-  servo_lift();
   leds_start_match();
 
   // TODO : Lift mini PAMIs
