@@ -141,11 +141,9 @@ void front_leds_color(enum color color) {
 void leds_tirette_wait(bool tirette, bool au_status)
 {
     if (tirette && au_status)
-        front_leds_color(COLOR_YELLOW);
-    else if(tirette && !au_status)
-        front_leds_color(COLOR_BLUE);
-    else if(!tirette && au_status)
         front_leds_color(COLOR_GREEN);
+    else if(tirette && !au_status)
+        front_leds_color(COLOR_YELLOW);
 }
 
 /* One yellow, others red */
