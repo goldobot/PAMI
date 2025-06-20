@@ -113,7 +113,8 @@ void waitTirette() {
     while (!tirette || !au_status) {
       tirette = digitalRead(TIRETTE) == HIGH ? false : true;
       au_status = digitalRead(AU_STATUS) == HIGH ? true : false;
-      leds_tirette_wait(tirette, au_status);
+      if(current_side != SIDE_UNKNOWN)
+        leds_tirette_wait(tirette, au_status);
       vTaskDelay(10 / portTICK_PERIOD_MS);
     }
     Serial.println("Tirette present and AU OK");
