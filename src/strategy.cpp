@@ -29,16 +29,33 @@ void strat_superstar_yellow(){
 }
 
 void strat_groupie1_yellow(){
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    moveStepper(-400, 1000, 1000);
+    turnStepper(45, 3000, 1000);
+    moveStepper(-950, 1000, 1000);
+    turnStepper(-100, 3000, 1000);
 
+    turnStepper(-20, 3000, 1000);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    servo_drop_r();
+    vTaskDelay(500 / portTICK_PERIOD_MS);  
+    
+    turnStepper(30, 3000, 1000);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    servo_drop_l();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    turnStepper(-10, 3000, 1000);
+    moveStepper(-250, 1000, 500);
 }
 
 void strat_groupie2_yellow(){
     /* Move to last zone*/
-    moveStepper(-400, 6000, 1000);
+    moveStepper(-400, 1000, 1000);
     turnStepper(45, 3000, 1000);
-    moveStepper(-700, 6000, 1000);
+    moveStepper(-700, 1000, 1000);
     turnStepper(-45, 3000, 1000);
-    moveStepper(-750, 6000, 1000);
+    moveStepper(-850, 1000, 1000);
 
     /* Face pit */
     turnStepper(-90, 3000, 1000);
@@ -82,7 +99,24 @@ void strat_superstar_blue(){
 }
 
 void strat_groupie1_blue(){
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    moveStepper(-400, 1000, 1000);
+    turnStepper(-45, 3000, 1000);
+    moveStepper(-950, 1000, 1000);
+    turnStepper(100, 3000, 1000);
 
+    turnStepper(20, 3000, 1000);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    servo_drop_r();
+    vTaskDelay(500 / portTICK_PERIOD_MS);  
+    
+    turnStepper(-30, 3000, 1000);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    servo_drop_l();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    turnStepper(10, 3000, 1000);
+    moveStepper(-250, 1000, 500);
 }
 
 void strat_groupie2_blue(){
@@ -92,7 +126,7 @@ void strat_groupie2_blue(){
     turnStepper(-45, 3000, 1000);
     moveStepper(-700, 6000, 1000);
     turnStepper(45, 3000, 1000);
-    moveStepper(-750, 6000, 1000);
+    moveStepper(-850, 6000, 1000);
 
     /* Face pit */
     turnStepper(90, 3000, 1000);
