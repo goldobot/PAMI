@@ -54,16 +54,15 @@ void init_diff_drive()
 
 void stopStepper()
 {
-  stepper_left.setMaxSpeed(0);
-  stepper_right.setMaxSpeed(0);
-  stepper_left.runSpeed();
-  stepper_right.runSpeed();
+  stepper_left.stop();
+  stepper_right.stop();
   // Serial.println("Stopping steppers");
   delay(500);
 }
 
 void moveStepper(float distance_mm, float speed, float acceleration)
 {
+  bool detected = false;
   int32_t steps = distance_mm * steps_per_mm_pami;
 
   targetLeft += steps;
@@ -81,10 +80,16 @@ void moveStepper(float distance_mm, float speed, float acceleration)
     if ((distance_mm > 0 && getObstacleFront()) || (distance_mm < 0 && getObstacleRear()))
     {
       stopStepper();
+      detected = true;
       continue;
     }
-    stepper_left.setMaxSpeed(speed * steps_per_mm_pami);
-    stepper_right.setMaxSpeed(speed * steps_per_mm_pami);
+    if(detected) {
+      stepper_left.setMaxSpeed(speed * steps_per_mm_pami * 0.3);
+      stepper_right.setMaxSpeed(speed * steps_per_mm_pami * 0.3);
+    } else {
+      stepper_left.setMaxSpeed(speed * steps_per_mm_pami);
+      stepper_right.setMaxSpeed(speed * steps_per_mm_pami);
+    }
     stepper_left.run();
     stepper_right.run();
   }
