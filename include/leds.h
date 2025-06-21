@@ -35,6 +35,7 @@ void show_start_pos(uint8_t pami_id, uint8_t side);
 void leds_tirette_wait(bool tirette, bool au_status);
 void leds_start_wait(uint8_t led_no);
 void leds_start_match();
+void front_leds_color(enum color color);
 void TaskRainbow(void *pvParameters);
 void rainbow(int wait);
 

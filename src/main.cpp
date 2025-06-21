@@ -14,15 +14,6 @@
 #include "matchTimer.h"
 #include "strategy.h"
 
-/* Time before start (85 for real match)*/
-#if 1
-  #define WAIT_TIME 85
-#else
-  #define WAIT_TIME 5 // For testing purposes, set to 5 seconds
-#endif
-
-#define DURATION 14
-
 #define AU_STATUS 1
 #define TIRETTE 9
 #define COLOR_BTN 4
@@ -76,7 +67,7 @@ void init_pami() {
 
   if(digitalRead(ID1) == HIGH && digitalRead(ID2) == HIGH) {
     pami_id = 0; // Not implemented
-  } else if(digitalRead(ID1) == LOW && digitalRead(ID2) == HIGH) {
+  } else if(digitalRead(ID1) == HIGH && digitalRead(ID2) == LOW) {
     pami_id = 0; // SUPERSTAR
   } else if(digitalRead(ID1) == LOW && digitalRead(ID2) == HIGH) {
     pami_id = 1; // PAMI ID 2
@@ -130,7 +121,7 @@ void waitTirette() {
 /* function to wait start time */
 void waitStart() {
   uint8_t count = 0;
-  while (getMatchTime() < WAIT_TIME) {
+  while (getMatchTime() < pamiStartTime) {
     vTaskDelay(50 / portTICK_PERIOD_MS);
     count++;
     if(count < 10)
@@ -147,9 +138,9 @@ void waitStart() {
   vTaskDelay(500 / portTICK_PERIOD_MS);
 }
 
-/* function to wait start time */
+/* function to wait end Of match */
 void waitMatchEnd() {
-  while (getMatchTime() < WAIT_TIME + DURATION) {
+  while (getMatchTime() < matchTotalDuration) {
     vTaskDelay(50 / portTICK_PERIOD_MS);
   }
 }
@@ -160,20 +151,57 @@ void setup() {
   pinMode(TIRETTE, INPUT);
   pinMode(COLOR_BTN, INPUT_PULLUP);
   pinMode(AU_STATUS, INPUT);
-
+  
   init_leds();
   init_servos();
   init_pami();
   init_sensors();
   servo_drop();
+  
+  vTaskDelay (100);
+
+  int matchInitTime = 0;
+  // If color button down, set Debug Mode
+  if(!digitalRead(COLOR_BTN)){
+    // Set Debug Mode
+    matchInitTime = -(pamiStartTime - 2) * 1000; //seconds
+    front_leds_color(COLOR_RED);
+  }
+  else {
+    front_leds_color(COLOR_GREEN);
+  }
+  vTaskDelay (1000 / portTICK_PERIOD_MS);
+
+  // Wait for tirette installation, or while AU is down, or color not selected
+  while(digitalRead(TIRETTE) or !digitalRead(AU_STATUS) or current_side == SIDE_UNKNOWN) {
+    // Update color selection
+    bool colorSwitched = false;
+    while (!digitalRead(COLOR_BTN)) {
+      if(!colorSwitched){
+        colorSwitched = true;
+        switchSide();
+      }
+      vTaskDelay(50);
+    }
+
+    // Show PAMI position
+    show_start_pos(pami_id, current_side);
+    vTaskDelay(100);
+
+    // If AU show warn
+    if(!digitalRead(AU_STATUS)) {
+      front_leds_color(COLOR_RED);
+      vTaskDelay(100);
+    }
+  }
 
   /* Task to check color button */
-  vTaskDelay (500 / portTICK_PERIOD_MS);
-  xTaskCreate(TaskButton, "Task Button", 4096, NULL, 1, NULL);
+  //vTaskDelay (500 / portTICK_PERIOD_MS);
+  //xTaskCreate(TaskButton, "Task Button", 4096, NULL, 1, NULL);
 
   waitTirette();
   
-  startMatchTimer();
+  startMatchTimer(matchInitTime);
 
   waitStart();
   
@@ -181,7 +209,6 @@ void setup() {
   Serial.println("GO GO GO !!!");
   leds_start_match();
 
-  // TODO : Lift mini PAMIs
   /* Task to check sensor for collision avoidance */
   xTaskCreate(TaskAvoidance, "Task Avoidance", 4096, NULL, 1, NULL);
   /* Task to move the PAMI*/

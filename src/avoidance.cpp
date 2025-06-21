@@ -47,7 +47,7 @@ void init_sensors() {
 void TaskAvoidance(void *pvParameters) {
     init_sensors();
     
-    while (getMatchTime() < 100) {
+    while (getMatchTime() < matchTotalDuration) {
         // Check bumper sensors
         if (digitalRead(USW1) == LOW)
             obstacleFrontLeft = true;
@@ -70,7 +70,7 @@ void TaskAvoidance(void *pvParameters) {
         else 
             obstacleRearRight = false;
 
-        vTaskDelay(10 / portTICK_PERIOD_MS); 
+        vTaskDelay(10);
     }
 
     vTaskDelete(NULL);

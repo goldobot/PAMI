@@ -81,26 +81,24 @@ void show_start_pos(uint8_t pami_id, uint8_t side)
     led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_WHITE].g;
     led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_WHITE].b;
 
-    if (side == SIDE_UNKNOWN)
-        return;
-    else if (side == SIDE_YELLOW)
+    if (side == SIDE_YELLOW)
     {
         switch (pami_id)
         {
         case 0:
-            led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_YELLOW].r;
+            led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_YELLOW].g;
+            led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_YELLOW].b;
             break;
         case 1:
-            led_colors[LED_DETECT_CENTER].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_CENTER].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_CENTER].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_CENTER].r = color_table[COLOR_YELLOW].r;
+            led_colors[LED_DETECT_CENTER].g = color_table[COLOR_YELLOW].g;
+            led_colors[LED_DETECT_CENTER].b = color_table[COLOR_YELLOW].b;
             break;
         case 2:
-            led_colors[LED_DETECT_LEFT].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_LEFT].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_LEFT].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_LEFT].r = color_table[COLOR_YELLOW].r;
+            led_colors[LED_DETECT_LEFT].g = color_table[COLOR_YELLOW].g;
+            led_colors[LED_DETECT_LEFT].b = color_table[COLOR_YELLOW].b;
             break;
         }
     }
@@ -109,19 +107,19 @@ void show_start_pos(uint8_t pami_id, uint8_t side)
         switch (pami_id)
         {
         case 0:
-            led_colors[LED_DETECT_LEFT].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_LEFT].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_LEFT].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_LEFT].r = color_table[COLOR_BLUE].r;
+            led_colors[LED_DETECT_LEFT].g = color_table[COLOR_BLUE].g;
+            led_colors[LED_DETECT_LEFT].b = color_table[COLOR_BLUE].b;
             break;
         case 1:
-            led_colors[LED_DETECT_CENTER].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_CENTER].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_CENTER].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_CENTER].r = color_table[COLOR_BLUE].r;
+            led_colors[LED_DETECT_CENTER].g = color_table[COLOR_BLUE].g;
+            led_colors[LED_DETECT_CENTER].b = color_table[COLOR_BLUE].b;
             break;
         case 2:
-            led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_RED].r;
-            led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_RED].g;
-            led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_RED].b;
+            led_colors[LED_DETECT_RIGHT].r = color_table[COLOR_BLUE].r;
+            led_colors[LED_DETECT_RIGHT].g = color_table[COLOR_BLUE].g;
+            led_colors[LED_DETECT_RIGHT].b = color_table[COLOR_BLUE].b;
             break;
         }
     }
@@ -143,7 +141,7 @@ void leds_tirette_wait(bool tirette, bool au_status)
     if (tirette && au_status)
         front_leds_color(COLOR_GREEN);
     else if(tirette && !au_status)
-        front_leds_color(COLOR_YELLOW);
+        front_leds_color(COLOR_RED);
 }
 
 /* One yellow, others red */
@@ -151,13 +149,13 @@ void leds_start_wait(uint8_t led_no)
 {
     for(int i = LED_DETECT_RIGHT; i <= LED_DETECT_LEFT; i++) {
         if(i == led_no) {
-            led_colors[i].r = color_table[COLOR_YELLOW].r;
-            led_colors[i].g = color_table[COLOR_YELLOW].g;
-            led_colors[i].b = color_table[COLOR_YELLOW].b;
+            led_colors[i].r = color_table[COLOR_WHITE].r;
+            led_colors[i].g = color_table[COLOR_WHITE].g;
+            led_colors[i].b = color_table[COLOR_WHITE].b;
         } else {
-            led_colors[i].r = color_table[COLOR_RED].r;
-            led_colors[i].g = color_table[COLOR_RED].g;
-            led_colors[i].b = color_table[COLOR_RED].b;
+            led_colors[i].r = color_table[COLOR_GREEN].r;
+            led_colors[i].g = color_table[COLOR_GREEN].g;
+            led_colors[i].b = color_table[COLOR_GREEN].b;
         }
     }
     leds_update();

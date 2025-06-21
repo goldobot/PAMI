@@ -1,9 +1,9 @@
 #include "matchTimer.h"
 
 int startTime;
-uint8_t timeSeconds;
+int timeSeconds;
 
-uint8_t getMatchTime() {
+int getMatchTime() {
     return timeSeconds;
 }
 
@@ -19,8 +19,8 @@ void TaskMatchTimer(void *pvParameters) {
     vTaskDelete(NULL);
 }
 
-void startMatchTimer() {
-    startTime = millis();
+void startMatchTimer(int timeOffset) {
+    startTime = millis() + timeOffset;
     timeSeconds = 0;
     xTaskCreate(TaskMatchTimer, "Task Match Timer", 2048, NULL, 1, NULL);
 }

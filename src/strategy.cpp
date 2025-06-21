@@ -25,7 +25,7 @@ void strat_superstar_yellow(){
 
     /* Go to edge */
     turnStepper(30, 500, 500);
-    moveStepper(-320, 600,300);
+    moveStepper(-315, 400,300);
 }
 
 void strat_groupie1_yellow(){
@@ -76,6 +76,15 @@ void strat_groupie2_yellow(){
     moveStepper(-200, 1000, 1000);
 }
 
+void strat_groupie2_sansminiPAMI_yellow(){
+    /* Move to last zone*/
+    moveStepper(-400, 500, 600);
+    turnStepper(18, 3000, 1000);
+    moveStepper(-700, 500, 600);
+    /*face the crowd*/
+    turnStepper(-108, 3000, 1000);
+}
+
 void strat_superstar_blue(){
     moveStepper(-500, 2000, 1000);
     vTaskDelay(100 / portTICK_PERIOD_MS);
@@ -95,7 +104,7 @@ void strat_superstar_blue(){
 
     /* Go to edge */
     turnStepper(-30, 500, 500);
-    moveStepper(-320, 600,300);
+    moveStepper(-315, 400,300);
 }
 
 void strat_groupie1_blue(){
@@ -147,6 +156,15 @@ void strat_groupie2_blue(){
     moveStepper(-200, 1000, 1000);
 }
 
+void strat_groupie2_sansminiPAMI_blue(){
+    /* Move to last zone*/
+    moveStepper(-400, 500, 600);
+    turnStepper(-18, 3000, 1000);
+    moveStepper(-700, 500, 600);
+    /*face the crowd*/
+    turnStepper(108, 3000, 1000);
+}
+
 void TaskStrategy(void *pvParameters) {
     init_diff_drive();
     
@@ -156,7 +174,8 @@ void TaskStrategy(void *pvParameters) {
         else if(pami_id == 1)
             strat_groupie1_yellow();
         else if(pami_id == 2)
-            strat_groupie2_yellow();
+           strat_groupie2_yellow();
+            //strat_groupie2_sansminiPAMI_yellow();
     } else if(current_side == SIDE_BLUE) {
         if(pami_id == 0)
             strat_superstar_blue();
@@ -164,6 +183,7 @@ void TaskStrategy(void *pvParameters) {
             strat_groupie1_blue();
         else if(pami_id == 2)
             strat_groupie2_blue();
+            //strat_groupie2_sansminiPAMI_blue();
     }
 
     stopStepper();

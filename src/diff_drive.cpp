@@ -57,38 +57,37 @@ void stopStepper()
   stepper_left.stop();
   stepper_right.stop();
   // Serial.println("Stopping steppers");
-  delay(500);
+  //delay(500);
 }
 
 void moveStepper(float distance_mm, float speed, float acceleration)
 {
   bool detected = false;
   int32_t steps = distance_mm * steps_per_mm_pami;
-
   targetLeft += steps;
   targetRight += steps;
+  bool shouldInitMove = true;
 
-  stepper_left.setMaxSpeed(speed * steps_per_mm_pami);
-  stepper_right.setMaxSpeed(speed * steps_per_mm_pami);
-  stepper_left.setAcceleration(acceleration * steps_per_mm_pami);
-  stepper_right.setAcceleration(acceleration * steps_per_mm_pami);
-  stepper_left.moveTo(targetLeft);
-  stepper_right.moveTo(targetRight);
-
-  while ((stepper_left.isRunning() || stepper_right.isRunning()))
+  while (shouldInitMove || (stepper_left.isRunning() || stepper_right.isRunning()))
   {
-    if ((distance_mm > 0 && getObstacleFront()) || (distance_mm < 0 && getObstacleRear()))
+    if ((distance_mm > 0.f && getObstacleFront()) || (distance_mm < 0.f && getObstacleRear()))
     {
       stopStepper();
-      detected = true;
+      shouldInitMove = true;
+      vTaskDelay(1);
       continue;
     }
-    if(detected) {
-      stepper_left.setMaxSpeed(speed * steps_per_mm_pami * 0.3);
-      stepper_right.setMaxSpeed(speed * steps_per_mm_pami * 0.3);
-    } else {
+    if(shouldInitMove) {
+      shouldInitMove = false;
+      // Reset curr pos to re-init accel ramps
+      stepper_left.setCurrentPosition(stepper_left.currentPosition());
+      stepper_right.setCurrentPosition(stepper_right.currentPosition());
       stepper_left.setMaxSpeed(speed * steps_per_mm_pami);
       stepper_right.setMaxSpeed(speed * steps_per_mm_pami);
+      stepper_left.setAcceleration(acceleration * steps_per_mm_pami);
+      stepper_right.setAcceleration(acceleration * steps_per_mm_pami);
+      stepper_left.moveTo(targetLeft);
+      stepper_right.moveTo(targetRight);
     }
     stepper_left.run();
     stepper_right.run();
