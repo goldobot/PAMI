@@ -28,8 +28,8 @@ void servo_mid() {
 }
 
 void servo_lift() {
-    servos.write(SERVO4, 160);
-    servos.write(SERVO1, 10);
+    servos.write(SERVO4, 157); //reduced from 160 (too much for PAMI2)
+    servos.write(SERVO1, 13); //reduced from 10 (too much for PAMI2)
 }
 
 void servo_drop() {

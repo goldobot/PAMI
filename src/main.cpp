@@ -164,7 +164,7 @@ void setup() {
   // If color button down, set Debug Mode
   if(!digitalRead(COLOR_BTN)){
     // Set Debug Mode
-    matchInitTime = -(pamiStartTime - 2) * 1000; //seconds
+    matchInitTime = -(pamiStartTime - 0) * 1000; //seconds (wait 0s after tirette in debug)
     front_leds_color(COLOR_RED);
   }
   else {

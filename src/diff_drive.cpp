@@ -56,8 +56,6 @@ void stopStepper()
 {
   stepper_left.stop();
   stepper_right.stop();
-  // Serial.println("Stopping steppers");
-  //delay(500);
 }
 
 void moveStepper(float distance_mm, float speed, float acceleration)
